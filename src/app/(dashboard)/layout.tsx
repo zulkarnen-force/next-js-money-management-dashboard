@@ -1,4 +1,5 @@
 import { AppSidebar } from "@/components/app-sidebar";
+import { WalletProvider } from "@/components/wallet-switcher";
 import {
   Breadcrumb,
   BreadcrumbItem,

@@ -18,18 +18,44 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import Wallet from "@/data/wallet";
 
-export function TeamSwitcher({
-  teams,
+interface WalletContextType {
+  wallets: Wallet[];
+  activeWallet: Wallet;
+  setActiveWallet: (wallet: Wallet) => void;
+}
+
+const WalletContext = React.createContext<WalletContextType | undefined>(
+  undefined
+);
+
+export const WalletProvider = ({
+  wallets,
+  children,
 }: {
-  teams: {
-    name: string;
-    logo: React.ElementType;
-    plan: string;
-  }[];
-}) {
+  wallets: Wallet[];
+  children: React.ReactNode;
+}) => {
+  const [activeWallet, setActiveWallet] = React.useState(wallets[0]);
+  return (
+    <WalletContext.Provider value={{ wallets, activeWallet, setActiveWallet }}>
+      {children}
+    </WalletContext.Provider>
+  );
+};
+
+export const useWallet = () => {
+  const context = React.useContext(WalletContext);
+  if (!context) {
+    throw new Error("useWallet must be used within a WalletProvider");
+  }
+  return context;
+};
+
+export function WalletSwitcher() {
   const { isMobile } = useSidebar();
-  const [activeTeam, setActiveTeam] = React.useState(teams[0]);
+  const { wallets, activeWallet, setActiveWallet } = useWallet();
 
   return (
     <SidebarMenu>
@@ -41,13 +67,15 @@ export function TeamSwitcher({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                <activeTeam.logo className="size-4" />
+                <img src={activeWallet.logo} alt="" className="size-6" />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
-                  {activeTeam.name}
+                  {activeWallet.name}
                 </span>
-                <span className="truncate text-xs">{activeTeam.plan}</span>
+                <span className="truncate text-xs">
+                  Balance: ${activeWallet.balance.toFixed(2)}
+                </span>
               </div>
               <ChevronsUpDown className="ml-auto" />
             </SidebarMenuButton>
@@ -59,19 +87,19 @@ export function TeamSwitcher({
             sideOffset={4}
           >
             <DropdownMenuLabel className="text-xs text-muted-foreground">
-              Teams
+              Wallets
             </DropdownMenuLabel>
-            {teams.map((team, index) => (
+            {wallets.map((wallet) => (
               <DropdownMenuItem
-                key={team.name}
-                onClick={() => setActiveTeam(team)}
+                key={wallet.id}
+                onClick={() => setActiveWallet(wallet)}
                 className="gap-2 p-2"
               >
                 <div className="flex size-6 items-center justify-center rounded-sm border">
-                  <team.logo className="size-4 shrink-0" />
+                  <img src={wallet.logo} className="size-4 shrink-0" />
                 </div>
-                {team.name}
-                <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
+                {wallet.name}
+                <DropdownMenuShortcut>⌘{wallet.id}</DropdownMenuShortcut>
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />
@@ -79,7 +107,9 @@ export function TeamSwitcher({
               <div className="flex size-6 items-center justify-center rounded-md border bg-background">
                 <Plus className="size-4" />
               </div>
-              <div className="font-medium text-muted-foreground">Add team</div>
+              <div className="font-medium text-muted-foreground">
+                Add wallet
+              </div>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

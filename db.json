@@ -1,0 +1,72 @@
+{
+  "wallets": [
+    {
+      "id": "1",
+      "balance": 100000,
+      "name": "ShopeePay"
+    },
+    {
+      "id": "2",
+      "balance": 240000,
+      "name": "Bank Jago"
+    }
+  ],
+  "transactions": [
+    {
+      "wallet_id": "1",
+      "id": "t1",
+      "name": "Shopee Purchase",
+      "email": "merchant@shopee.com",
+      "amount": -20000,
+      "image": "https://api.slingacademy.com/public/sample-users/6.png"
+    },
+    {
+      "wallet_id": "1",
+      "id": "t2",
+      "name": "Top-up",
+      "email": "topup@shopeepay.com",
+      "amount": 50000,
+      "image": "https://api.slingacademy.com/public/sample-users/7.png"
+    },
+    {
+      "wallet_id": "2",
+      "id": "t3",
+      "name": "Transfer to Friend",
+      "email": "friend@email.com",
+      "amount": -150000,
+      "image": "https://api.slingacademy.com/public/sample-users/8.png"
+    },
+    {
+      "wallet_id": "2",
+      "id": "t4",
+      "name": "Salary Deposit",
+      "email": "company@salary.com",
+      "amount": 500000,
+      "image": "https://api.slingacademy.com/public/sample-users/9.png"
+    }
+  ],
+  "financials": [
+    {
+      "wallet_id": "1",
+      "data": [
+        { "month": "January", "income": 5000, "outcome": 3000 },
+        { "month": "February", "income": 4500, "outcome": 3200 },
+        { "month": "March", "income": 5200, "outcome": 2900 },
+        { "month": "April", "income": 6000, "outcome": 3100 },
+        { "month": "May", "income": 5800, "outcome": 3500 },
+        { "month": "June", "income": 6200, "outcome": 3700 }
+      ]
+    },
+    {
+      "walletId": "2",
+      "data": [
+        { "month": "January", "income": 8000, "outcome": 5000 },
+        { "month": "February", "income": 7500, "outcome": 5200 },
+        { "month": "March", "income": 7200, "outcome": 4900 },
+        { "month": "April", "income": 8100, "outcome": 5200 },
+        { "month": "May", "income": 8800, "outcome": 5500 },
+        { "month": "June", "income": 9200, "outcome": 5800 }
+      ]
+    }
+  ]
+}
