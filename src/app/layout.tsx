@@ -4,7 +4,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import SessionWrapper from "@/components/SessionWrapper";
 import "./globals.css";
 import { WalletProvider } from "@/components/wallet-switcher";
-import { wallets } from "@/data/wallet";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,7 +31,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <SessionWrapper>
-          <WalletProvider wallets={wallets}>{children}</WalletProvider>
+          <WalletProvider>{children}</WalletProvider>
         </SessionWrapper>
       </body>
     </html>

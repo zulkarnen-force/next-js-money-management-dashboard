@@ -3,12 +3,14 @@
     {
       "id": "1",
       "balance": 100000,
-      "name": "ShopeePay"
+      "name": "ShopeePay",
+      "logo": "/shopee.jpeg"
     },
     {
       "id": "2",
       "balance": 240000,
-      "name": "Bank Jago"
+      "name": "Bank Jago",
+      "logo": "/shopee.jpeg"
     }
   ],
   "transactions": [

@@ -22,7 +22,7 @@ import Wallet from "@/data/wallet";
 
 interface WalletContextType {
   wallets: Wallet[];
-  activeWallet: Wallet;
+  activeWallet: Wallet | null;
   setActiveWallet: (wallet: Wallet) => void;
 }
 
@@ -30,14 +30,18 @@ const WalletContext = React.createContext<WalletContextType | undefined>(
   undefined
 );
 
-export const WalletProvider = ({
-  wallets,
-  children,
-}: {
-  wallets: Wallet[];
-  children: React.ReactNode;
-}) => {
-  const [activeWallet, setActiveWallet] = React.useState(wallets[0]);
+export const WalletProvider = ({ children }: { children: React.ReactNode }) => {
+  const [wallets, setWallets] = React.useState<Wallet[]>([]);
+  const [activeWallet, setActiveWallet] = React.useState<Wallet | null>(null);
+
+  React.useEffect(() => {
+    fetch("http://localhost:3001/wallets")
+      .then((res) => res.json())
+      .then((data) => {
+        setWallets(data);
+        setActiveWallet(data[0]); // Set the first wallet as default
+      });
+  }, []);
   return (
     <WalletContext.Provider value={{ wallets, activeWallet, setActiveWallet }}>
       {children}
@@ -67,14 +71,14 @@ export function WalletSwitcher() {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                <img src={activeWallet.logo} alt="" className="size-6" />
+                <img src={activeWallet?.logo} alt="" className="size-6" />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
-                  {activeWallet.name}
+                  {activeWallet?.name}
                 </span>
                 <span className="truncate text-xs">
-                  Balance: ${activeWallet.balance.toFixed(2)}
+                  Balance: ${activeWallet?.balance.toFixed(2)}
                 </span>
               </div>
               <ChevronsUpDown className="ml-auto" />
