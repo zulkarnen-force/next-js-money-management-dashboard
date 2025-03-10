@@ -1,13 +1,14 @@
 // app/layout.tsx
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Inter } from "next/font/google";
 import SessionWrapper from "@/components/SessionWrapper";
 import "./globals.css";
 import { WalletProvider } from "@/components/wallet-switcher";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// Initialize the Inter font
+const inter = Inter({
   subsets: ["latin"],
+  variable: "--font-sans",
 });
 
 const geistMono = Geist_Mono({
@@ -27,9 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${inter.variable} ${geistMono.variable} antialiased`}>
         <SessionWrapper>
           <WalletProvider>{children}</WalletProvider>
         </SessionWrapper>

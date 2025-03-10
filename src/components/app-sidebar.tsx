@@ -140,7 +140,7 @@ const dummy = {
   ],
   projects: [
     {
-      name: "Design Engineering",
+      name: "Income & Expenses",
       url: "#",
       icon: Frame,
     },

@@ -14,6 +14,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { AddShortcutDialog } from "@/components/shortcut/add-income-expense";
 
 export default function Page({ children }: { children: React.ReactNode }) {
   return (
@@ -41,6 +42,9 @@ export default function Page({ children }: { children: React.ReactNode }) {
         </header>
         <main>{children}</main>
       </SidebarInset>
+      <div className="fixed bottom-5 right-4 z-50 flex flex-col gap-2">
+        <AddShortcutDialog></AddShortcutDialog>
+      </div>
     </SidebarProvider>
   );
 }
