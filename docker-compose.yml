@@ -1,0 +1,27 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: moneydb
+    volumes:
+      - ./db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  app:
+    build:
+      context: .
+      dockerfile: .docker/Dockerfile
+      target: ${BUILD_TARGET:-development}
+    depends_on:
+      - db
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      DATABASE_URL: postgres://postgres:postgres@db:5432/moneydb
+    ports:
+      - "3000:3000"
+      - "5555:5555"
+    volumes:
+      - .:/app

@@ -15,8 +15,17 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { AddShortcutDialog } from "@/components/shortcut/add-income-expense";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../api/auth/[...nextauth]/route";
+import { redirect } from "next/navigation";
 
-export default function Page({ children }: { children: React.ReactNode }) {
+export default async function Page({ children }: { children: React.ReactNode }) {
+  const session = await getServerSession(authOptions);
+  console.log("🚀 ~ Page ~ session:", session)
+
+  if (!session) {
+    redirect("/login");
+  }
   return (
     <SidebarProvider>
       <AppSidebar />

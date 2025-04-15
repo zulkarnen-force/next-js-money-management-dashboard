@@ -21,6 +21,7 @@ import {
 import { RecentTransactions } from "@/components/dashboard/recent-transaction";
 import { TransactionGraph } from "@/components/dashboard/income-outcome-transaction-graph";
 import { IncomeOutcomeArea } from "@/components/dashboard/income-outcome-area";
+import { useSession } from "next-auth/react";
 
 const balanceData = [
   { name: "Income", amount: 5000, color: "#10b981" },
@@ -48,6 +49,8 @@ const recentTransactions = [
 ];
 
 export default function MoneyDashboard() {
+  const { data: session } = useSession();
+  console.info(session)
   return (
     <div className="grid gap-6 p-6 md:grid-cols-2 lg:grid-cols-3">
       {/* Balance Overview */}
