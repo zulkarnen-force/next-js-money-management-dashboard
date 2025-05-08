@@ -1,45 +1,100 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
+import { getServerSession } from "next-auth/next"
+import { authOptions } from "../auth/[...nextauth]/route";
+
 
 const prisma = new PrismaClient();
 
 export async function POST(req: NextRequest) {
+  const session = await getServerSession(authOptions)
+  // @ts-ignore
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  // @ts-ignore
+  const userId = session.user.id;
   const data = await req.json();
-
+  console.info(data[0])
+  
   for (const row of data) {
-    const categoryName = row["Category"].trim();
-    const subcategoryName = row["Subcategory"].trim();
-    const typeName = row["Income/Expense"].trim();
+    const categoryName = row["Category"]?.trim() || "";
+    const subcategoryName = row["Subcategory"]?.trim() || "";
+    const typeName = row["Income/Expense"]?.trim() || "";
 
     // Get or create TransactionType
-    const transactionType = await prisma.transactionType.upsert({
-      where: { name: typeName },
-      update: {},
-      create: { name: typeName },
+    let transactionType = await prisma.transactionType.findFirst({
+      where: { 
+        name: typeName,
+        userId: userId
+      }
     });
+
+    if (!transactionType) {
+      transactionType = await prisma.transactionType.create({
+        data: { 
+          name: typeName,
+          userId: userId
+        }
+      });
+    }
 
     // Get or create Category
-    const category = await prisma.category.upsert({
-      where: { name: categoryName },
-      update: {},
-      create: { name: categoryName },
+    let category = await prisma.category.findFirst({
+      where: { 
+        name: categoryName,
+        userId: userId
+      }
     });
+
+    if (!category) {
+      category = await prisma.category.create({
+        data: { 
+          name: categoryName,
+          userId: userId
+        }
+      });
+    }
 
     // Get or create Subcategory
-    let subcategory = await prisma.subcategory.findFirst({
-      where: {
-        name: subcategoryName,
-        categoryId: category.id,
-      },
-    });
-
-    if (!subcategory) {
-      subcategory = await prisma.subcategory.create({
-        data: {
+    let subcategory = null;
+    if (subcategoryName) {
+      subcategory = await prisma.subcategory.findFirst({
+        where: {
           name: subcategoryName,
           categoryId: category.id,
+          userId: userId
         },
       });
+
+      if (!subcategory) {
+        subcategory = await prisma.subcategory.create({
+          data: {
+            name: subcategoryName,
+            categoryId: category.id,
+            userId: userId
+          },
+        });
+      }
+    } else {
+      // Create a default subcategory if none is provided
+      subcategory = await prisma.subcategory.findFirst({
+        where: {
+          name: "Default",
+          categoryId: category.id,
+          userId: userId
+        },
+      });
+
+      if (!subcategory) {
+        subcategory = await prisma.subcategory.create({
+          data: {
+            name: "Default",
+            categoryId: category.id,
+            userId: userId
+          },
+        });
+      }
     }
 
     // Create the Transaction
@@ -51,10 +106,11 @@ export async function POST(req: NextRequest) {
         idr: parseFloat(row["IDR"]) || null,
         description: row["Description"] || null,
         amount: parseFloat(row["Amount"]),
-        currencyAccount: row["Currency Accounts"],
+        currencyAccount: row["Currency Accounts"] || "IDR",
         categoryId: category.id,
-        subcategoryId: subcategory.id,
+        subcategoryId: subcategory.id, // Now we always have a valid subcategory ID
         transactionTypeId: transactionType.id,
+        userId: userId
       },
     });
   }

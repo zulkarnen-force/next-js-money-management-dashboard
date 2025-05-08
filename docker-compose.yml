@@ -1,5 +1,6 @@
 services:
   db:
+    container_name: money-db
     image: postgres:15
     environment:
       POSTGRES_USER: postgres
@@ -11,6 +12,7 @@ services:
       - "5432:5432"
 
   app:
+    container_name: money-app
     build:
       context: .
       dockerfile: .docker/Dockerfile
@@ -22,6 +24,27 @@ services:
       DATABASE_URL: postgres://postgres:postgres@db:5432/moneydb
     ports:
       - "3000:3000"
-      - "5555:5555"
     volumes:
       - .:/app
+
+  dbgate:
+    container_name: money-dbdate
+    image: dbgate/dbgate
+    restart: always
+    ports:
+      - 3001:3000
+    volumes:
+      - dbgate-data:/root/.dbgate
+    environment:
+      CONNECTIONS: con1
+
+      LABEL_con1: Postgres
+      SERVER_con1: db
+      USER_con1: postgres
+      PASSWORD_con1: postgres
+      PORT_con1: 5432
+      ENGINE_con1: postgres@dbgate-plugin-postgres
+
+volumes:
+  dbgate-data:
+    driver: local
