@@ -29,6 +29,7 @@ model User {
   transactionTypes TransactionType[]
 
   createdAt DateTime @default(now())
+  Wallet    Wallet[]
 }
 
 model Account {
@@ -62,7 +63,6 @@ model Session {
 model Transaction {
   id              String   @id @default(uuid())
   period          DateTime
-  account         String
   note            String?
   idr             Float?
   description     String?
@@ -73,6 +73,9 @@ model Transaction {
   // Relations
   userId String
   user   User   @relation(fields: [userId], references: [id])
+
+  walletId String
+  wallet   Wallet @relation(fields: [walletId], references: [id])
 
   categoryId String
   category   Category @relation(fields: [categoryId], references: [id])
@@ -109,4 +112,13 @@ model TransactionType {
   userId       String
   user         User          @relation(fields: [userId], references: [id])
   transactions Transaction[]
+}
+
+model Wallet {
+  id           String        @id @default(uuid())
+  name         String
+  userId       String
+  user         User          @relation(fields: [userId], references: [id])
+  transactions Transaction[]
+  createdAt    DateTime      @default(now())
 }

@@ -3,7 +3,6 @@ import { PrismaClient } from "@prisma/client";
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "../auth/[...nextauth]/route";
 
-
 const prisma = new PrismaClient();
 
 async function cleanupUserData(userId: string) {
@@ -23,6 +22,10 @@ async function cleanupUserData(userId: string) {
   await prisma.transactionType.deleteMany({
     where: { userId }
   });
+
+  await prisma.wallet.deleteMany({
+    where: { userId }
+  });
 }
 
 export async function POST(req: NextRequest) {
@@ -31,7 +34,7 @@ export async function POST(req: NextRequest) {
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-
+  // @ts-ignore
   const userId = session.user.id;
   const data = await req.json();
   console.info(data[0]);
@@ -40,10 +43,32 @@ export async function POST(req: NextRequest) {
     // Clean up existing data for the user
     await cleanupUserData(userId);
     
+    // Create a map to store wallet references
+    const walletMap = new Map<string, string>();
+    
     for (const row of data) {
       const categoryName = row["Category"]?.trim() || "";
       const subcategoryName = row["Subcategory"]?.trim() || "";
       const typeName = row["Income/Expense"]?.trim() || "";
+      const accountName = row["Accounts"]?.trim() || "Default Wallet";
+
+      // Get or create Wallet
+      let wallet = await prisma.wallet.findFirst({
+        where: {
+          name: accountName,
+          userId: userId
+        }
+      });
+
+      if (!wallet) {
+        wallet = await prisma.wallet.create({
+          data: {
+            name: accountName,
+            userId: userId
+          }
+        });
+      }
+      walletMap.set(accountName, wallet.id);
 
       // Get or create TransactionType
       let transactionType = await prisma.transactionType.findFirst({
@@ -124,15 +149,15 @@ export async function POST(req: NextRequest) {
       await prisma.transaction.create({
         data: {
           period: new Date(row["Period"]),
-          account: row["Accounts"],
           note: row["Note"] || null,
           idr: parseFloat(row["IDR"]) || null,
           description: row["Description"] || null,
           amount: parseFloat(row["Amount"]),
           currencyAccount: row["Currency Accounts"] || "IDR",
           categoryId: category.id,
-          subcategoryId: subcategory.id, // Now we always have a valid subcategory ID
+          subcategoryId: subcategory.id,
           transactionTypeId: transactionType.id,
+          walletId: wallet.id,
           userId: userId
         },
       });
@@ -140,6 +165,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    return NextResponse.json({ error: "An error occurred" }, { status: 500 });
+    console.error("Import error:", error);
+    return NextResponse.json({ error: "An error occurred during import" }, { status: 500 });
   }
 }
