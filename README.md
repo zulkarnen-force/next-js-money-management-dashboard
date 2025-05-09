@@ -1,3 +1,3 @@
 ## Screenshoots
 
-![image](https://github.com/user-attachments/assets/525a91af-c274-46a8-83fc-e4edfacee489)
+![image](https://github.com/user-attachments/assets/8ef70547-668c-403b-8f20-2009957c9458)
