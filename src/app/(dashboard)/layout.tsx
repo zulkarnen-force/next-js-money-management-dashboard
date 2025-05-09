@@ -38,12 +38,12 @@ export default async function Page({ children }: { children: React.ReactNode }) 
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:block">
                   <BreadcrumbLink href="#">
-                    Money is matter
+                   Monee
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="hidden md:block" />
                 <BreadcrumbItem>
-                  <BreadcrumbPage>Your financial activities</BreadcrumbPage>
+                  <BreadcrumbPage>Track, spend, chill</BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>

@@ -102,9 +102,13 @@ export async function POST(req: NextRequest) {
       });
 
       if (!category) {
+        // Determine category type based on transaction type
+        const categoryType = transactionType.type === 'income' ? 'income' : 'outcome';
+        
         category = await prisma.category.create({
           data: { 
             name: categoryName,
+            type: categoryType,
             userId: userId
           }
         });
