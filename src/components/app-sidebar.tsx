@@ -2,16 +2,14 @@
 
 import * as React from "react";
 import {
-  AudioWaveform,
-  BookOpen,
-  Bot,
-  Command,
-  Frame,
-  GalleryVerticalEnd,
-  Map,
+  BarChart3,
+  Calendar,
+  CreditCard,
+  FileText,
   PieChart,
   Settings2,
-  SquareTerminal,
+  Wallet,
+  WalletCards,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -27,132 +25,135 @@ import {
 } from "@/components/ui/sidebar";
 import { useSession } from "next-auth/react";
 
-// This is sample data.
-const dummy = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  teams: [
-    {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
-  ],
+// Navigation items for money management system
+const navigation = {
   navMain: [
     {
-      title: "Playground",
-      url: "#",
-      icon: SquareTerminal,
+      title: "Dashboard",
+      url: "/dashboard",
+      icon: BarChart3,
       isActive: true,
       items: [
         {
-          title: "History",
-          url: "#",
+          title: "Overview",
+          url: "/dashboard",
         },
         {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
+          title: "Analytics",
+          url: "/dashboard/analytics",
         },
       ],
     },
     {
-      title: "Models",
-      url: "#",
-      icon: Bot,
+      title: "Transactions",
+      url: "/transactions",
+      icon: WalletCards,
       items: [
         {
-          title: "Genesis",
-          url: "#",
+          title: "All Transactions",
+          url: "/transactions",
         },
         {
-          title: "Explorer",
-          url: "#",
+          title: "Income",
+          url: "/transactions/income",
         },
         {
-          title: "Quantum",
-          url: "#",
+          title: "Expenses",
+          url: "/transactions/expenses",
+        },
+        {
+          title: "Transfers",
+          url: "/transactions/transfers",
         },
       ],
     },
     {
-      title: "Documentation",
-      url: "#",
-      icon: BookOpen,
+      title: "Budgets",
+      url: "/budgets",
+      icon: PieChart,
       items: [
         {
-          title: "Introduction",
-          url: "#",
+          title: "Overview",
+          url: "/budgets",
         },
         {
-          title: "Get Started",
-          url: "#",
+          title: "Categories",
+          url: "/budgets/categories",
         },
         {
-          title: "Tutorials",
-          url: "#",
+          title: "Reports",
+          url: "/budgets/reports",
+        },
+      ],
+    },
+    {
+      title: "Calendar",
+      url: "/calendar",
+      icon: Calendar,
+      items: [
+        {
+          title: "Monthly View",
+          url: "/calendar",
         },
         {
-          title: "Changelog",
-          url: "#",
+          title: "Upcoming",
+          url: "/calendar/upcoming",
+        },
+      ],
+    },
+    {
+      title: "Reports",
+      url: "/reports",
+      icon: FileText,
+      items: [
+        {
+          title: "Monthly Report",
+          url: "/reports/monthly",
+        },
+        {
+          title: "Yearly Report",
+          url: "/reports/yearly",
+        },
+        {
+          title: "Custom Report",
+          url: "/reports/custom",
         },
       ],
     },
     {
       title: "Settings",
-      url: "#",
+      url: "/settings",
       icon: Settings2,
       items: [
         {
-          title: "General",
-          url: "#",
+          title: "Profile",
+          url: "/settings/profile",
         },
         {
-          title: "Team",
-          url: "#",
+          title: "Wallets",
+          url: "/settings/wallets",
         },
         {
-          title: "Billing",
-          url: "#",
+          title: "Categories",
+          url: "/settings/categories",
         },
         {
-          title: "Limits",
-          url: "#",
+          title: "Preferences",
+          url: "/settings/preferences",
         },
       ],
     },
   ],
   projects: [
     {
-      name: "Income & Expenses",
-      url: "#",
-      icon: Frame,
+      name: "Personal Finance",
+      url: "/dashboard",
+      icon: Wallet,
     },
     {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
+      name: "Business Account",
+      url: "/dashboard/business",
+      icon: CreditCard,
     },
   ],
 };
@@ -165,15 +166,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <WalletSwitcher />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={dummy.navMain} />
-        <NavProjects projects={dummy.projects} />
+        <NavMain items={navigation.navMain} />
+        <NavProjects projects={navigation.projects} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser
           user={{
-            name: session?.user?.name || "shadcn",
-            email: session?.user?.email || "m@example.com",
-            avatar: session?.user?.image || "/avatars/shadcn.jpg",
+            name: session?.user?.name || "User",
+            email: session?.user?.email || "user@example.com",
+            avatar: session?.user?.image || "/avatars/default.jpg",
           }}
         />
       </SidebarFooter>
@@ -181,3 +182,4 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     </Sidebar>
   );
 }
+
