@@ -36,7 +36,7 @@ const navigation = {
       items: [
         {
           title: "Overview",
-          url: "/dashboard",
+          url: "/",
         },
         {
           title: "Analytics",
