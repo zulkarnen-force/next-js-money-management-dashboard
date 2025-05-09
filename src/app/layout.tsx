@@ -17,8 +17,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Monee - Smart Money Management Dashboard",
-  description: "Monee helps you take control of your finances with powerful tools for expense tracking, budgeting, savings goals, and insightful analytics. Secure, easy-to-use, and designed to help you grow your wealth.",
+  title: "Savvie - Smart Money Management",
+  description: "Savvie helps you take control of your finances with powerful tools for expense tracking, budgeting, savings goals, and insightful analytics. Secure, easy-to-use, and designed to help you grow your wealth.",
 };
 
 export default function RootLayout({

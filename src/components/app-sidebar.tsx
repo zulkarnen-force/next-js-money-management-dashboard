@@ -36,11 +36,11 @@ const navigation = {
       items: [
         {
           title: "Overview",
-          url: "/",
+          url: "/dash",
         },
         {
           title: "Analytics",
-          url: "/dashboard/analytics",
+          url: "/dash/analytics",
         },
       ],
     },

@@ -19,7 +19,7 @@ interface Wallet {
 export function WalletsList() {
   const { activeWallet } = useWallet();
   const [wallets, setWallets] = useState<Wallet[]>([]);
-  const [showAmounts, setShowAmounts] = useState(true);
+  const [showAmounts, setShowAmounts] = useState(false);
 
   useEffect(() => {
     fetch("/api/wallets")
@@ -48,10 +48,11 @@ export function WalletsList() {
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <div>
           <CardTitle>Wallets Overview</CardTitle>
+          <CardDescription className="py-1">Quick look at where your money’s</CardDescription>
           <CardDescription>
             Total Balance:{" "}
             <span className={totalBalance >= 0 ? "text-green-500" : "text-red-500"}>
-              {showAmounts ? formatBalance(totalBalance) : "••••••••"}
+              {showAmounts ? formatBalance(totalBalance) : "• • • • • • • •"}
             </span>
           </CardDescription>
         </div>
@@ -94,7 +95,7 @@ export function WalletsList() {
                       wallet.balance >= 0 ? "text-green-500" : "text-red-500"
                     }`}
                   >
-                    {showAmounts ? formatBalance(wallet.balance) : "••••••••"}
+                    {showAmounts ? formatBalance(wallet.balance) : "• • • • • • • •"}
                   </div>
                 </div>
               ))}

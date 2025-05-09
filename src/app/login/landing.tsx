@@ -129,7 +129,7 @@ export default function LoginPage() {
                 <div className="p-4">
                   <Button
                     className="w-full gap-2"
-                    onClick={() => signIn("github", { callbackUrl: "/dashboard" })}
+                    onClick={() => signIn("github", { callbackUrl: "/dash" })}
                   >
                     Sign in with GitHub
                     <Github className="h-4 w-4" />

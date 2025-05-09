@@ -69,7 +69,7 @@ export default function LandingPage() {
           <Button
             className="w-full gap-2"
             variant="outline"
-            onClick={() => signIn("github", { callbackUrl: "/dashboard" })}
+            onClick={() => signIn("github", { callbackUrl: "/dash" })}
           >
             <Github className="h-4 w-4" /> Sign in with GitHub
           </Button>
