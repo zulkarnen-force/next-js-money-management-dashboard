@@ -109,6 +109,7 @@ model Subcategory {
 model TransactionType {
   id           String        @id @default(uuid())
   name         String
+  type         String        // 'income' or 'outcome'
   userId       String
   user         User          @relation(fields: [userId], references: [id])
   transactions Transaction[]

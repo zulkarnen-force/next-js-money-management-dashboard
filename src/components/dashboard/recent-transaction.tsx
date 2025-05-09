@@ -6,15 +6,26 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useWallet } from "../wallet-switcher";
 
 interface Transaction {
   id: string;
-  name: string;
-  email: string;
+  period: string;
   amount: number;
-  image?: string;
+  description: string | null;
+  note: string | null;
+  currencyAccount: string;
+  category: {
+    name: string;
+  };
+  subcategory: {
+    name: string;
+  };
+  transactionType: {
+    name: string;
+    type: string;
+  };
 }
 
 export function RecentTransactions() {
@@ -23,7 +34,7 @@ export function RecentTransactions() {
 
   useEffect(() => {
     if (activeWallet) {
-      fetch(`http://localhost:3001/transactions?wallet_id=${activeWallet.id}`)
+      fetch(`/api/transactions?wallet_id=${activeWallet.id}`)
         .then((res) => res.json())
         .then((data) => setTransactions(data))
         .catch((err) => console.error("Error fetching transactions:", err));
@@ -52,22 +63,25 @@ export function RecentTransactions() {
             transactions.map((transaction) => (
               <div key={transaction.id} className="flex items-center">
                 <Avatar className="h-9 w-9">
-                  <AvatarImage src={transaction.image} alt={transaction.name} />
-                  <AvatarFallback>{transaction.name.charAt(0)}</AvatarFallback>
+                  <AvatarFallback>
+                    {transaction.category.name.charAt(0)}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="ml-4 space-y-1">
-                  <p className="text-sm font-medium">{transaction.name}</p>
+                  <p className="text-sm font-medium">
+                    {transaction.description || transaction.category.name}
+                  </p>
                   <p className="text-sm text-muted-foreground">
-                    {transaction.email}
+                    {transaction.subcategory.name} • {transaction.transactionType.name}
                   </p>
                 </div>
                 <div
                   className={`ml-auto font-medium ${
-                    transaction.amount < 0 ? "text-red-500" : "text-green-500"
+                    transaction.transactionType.type === 'outcome' ? "text-red-500" : "text-green-500"
                   }`}
                 >
-                  {transaction.amount < 0 ? "-$" : "+$"}
-                  {Math.abs(transaction.amount).toLocaleString()}
+                  {transaction.transactionType.type === 'outcome' ? "-" : "+"}
+                  {transaction.currencyAccount} {Math.abs(transaction.amount).toLocaleString()}
                 </div>
               </div>
             ))

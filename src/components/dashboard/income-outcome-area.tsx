@@ -35,7 +35,7 @@ export function IncomeOutcomeArea() {
   useEffect(() => {
     if (!activeWallet) return;
 
-    fetch(`http://localhost:3001/financials?wallet_id=${activeWallet.id}`)
+    fetch(`/api/financials?wallet_id=${activeWallet.id}`)
       .then((res) => res.json())
       .then((data) => {
         if (data.length > 0) {
@@ -105,7 +105,7 @@ export function IncomeOutcomeArea() {
               <TrendingUp className="h-4 w-4" />
             </div>
             <div className="flex items-center gap-2 leading-none text-muted-foreground">
-              January - June 2024
+              {new Date().toLocaleString('default', { month: 'long' })} - {new Date(new Date().setMonth(new Date().getMonth() - 5)).toLocaleString('default', { month: 'long' })} {new Date().getFullYear()}
             </div>
           </div>
         </div>

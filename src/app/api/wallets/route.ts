@@ -20,10 +20,37 @@ export async function GET(req: NextRequest) {
       },
       orderBy: {
         createdAt: 'desc'
+      },
+      include: {
+        transactions: {
+          include: {
+            transactionType: true
+          }
+        }
       }
     });
 
-    return NextResponse.json(wallets);
+    // Calculate balance for each wallet
+    const walletsWithBalance = wallets.map(wallet => {
+      const balance = wallet.transactions.reduce((total, transaction) => {
+        if (transaction.transactionType.type === 'income') {
+          return total + transaction.amount;
+        } else {
+          return total - transaction.amount;
+        }
+      }, 0);
+
+      return {
+        ...wallet,
+        balance,
+        transactions: undefined // Remove transactions from response
+      };
+    });
+
+    // Filter out wallets with zero balance
+    const nonZeroWallets = walletsWithBalance.filter(wallet => wallet.balance !== 0);
+
+    return NextResponse.json(nonZeroWallets);
   } catch (error) {
     console.error("Error fetching wallets:", error);
     return NextResponse.json({ error: "Failed to fetch wallets" }, { status: 500 });

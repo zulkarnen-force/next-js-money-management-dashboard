@@ -24,6 +24,7 @@ interface Wallet {
   name: string;
   userId: string;
   createdAt: string;
+  balance: number;
 }
 
 interface WalletContextType {
@@ -74,8 +75,61 @@ export function WalletSwitcher() {
   const { wallets, activeWallet, setActiveWallet } = useWallet();
 
   if (!activeWallet) {
-    return null;
+    return (
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <SidebarMenuButton
+                size="lg"
+                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              >
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                  <Plus className="size-4" />
+                </div>
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-semibold">
+                    No Active Wallets
+                  </span>
+                  <span className="truncate text-xs text-muted-foreground">
+                    Add a wallet to get started
+                  </span>
+                </div>
+                <ChevronsUpDown className="ml-auto" />
+              </SidebarMenuButton>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+              align="start"
+              side={isMobile ? "bottom" : "right"}
+              sideOffset={4}
+            >
+              <DropdownMenuLabel className="text-xs text-muted-foreground">
+                Wallets
+              </DropdownMenuLabel>
+              <DropdownMenuItem className="gap-2 p-2">
+                <div className="flex size-6 items-center justify-center rounded-md border bg-background">
+                  <Plus className="size-4" />
+                </div>
+                <div className="font-medium text-muted-foreground">
+                  Add wallet
+                </div>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    );
   }
+
+  const formatBalance = (balance: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(balance);
+  };
 
   return (
     <SidebarMenu>
@@ -95,8 +149,8 @@ export function WalletSwitcher() {
                 <span className="truncate font-semibold">
                   {activeWallet.name}
                 </span>
-                <span className="truncate text-xs">
-                  Created: {new Date(activeWallet.createdAt).toLocaleDateString()}
+                <span className={`truncate text-xs ${activeWallet.balance >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                  Balance: {formatBalance(activeWallet.balance)}
                 </span>
               </div>
               <ChevronsUpDown className="ml-auto" />
@@ -109,7 +163,7 @@ export function WalletSwitcher() {
             sideOffset={4}
           >
             <DropdownMenuLabel className="text-xs text-muted-foreground">
-              Wallets
+              Wallets with Balance
             </DropdownMenuLabel>
             {wallets.map((wallet) => (
               <DropdownMenuItem
@@ -122,7 +176,12 @@ export function WalletSwitcher() {
                     {wallet.name.charAt(0)}
                   </span>
                 </div>
-                {wallet.name}
+                <div className="flex flex-col">
+                  <span>{wallet.name}</span>
+                  <span className={`text-xs ${wallet.balance >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                    {formatBalance(wallet.balance)}
+                  </span>
+                </div>
                 <DropdownMenuShortcut>⌘{wallet.id.slice(0, 4)}</DropdownMenuShortcut>
               </DropdownMenuItem>
             ))}

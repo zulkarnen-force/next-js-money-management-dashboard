@@ -79,9 +79,15 @@ export async function POST(req: NextRequest) {
       });
 
       if (!transactionType) {
+        // Determine type based on name
+        const type = ['Income', 'Transfer-In', 'Income Balance'].includes(typeName) 
+          ? 'income' 
+          : 'outcome';
+
         transactionType = await prisma.transactionType.create({
           data: { 
             name: typeName,
+            type: type,
             userId: userId
           }
         });
