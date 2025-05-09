@@ -7,6 +7,8 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { useWallet } from "../wallet-switcher";
+import { Button } from "@/components/ui/button";
+import { Eye, EyeOff } from "lucide-react";
 
 interface Wallet {
   id: string;
@@ -17,6 +19,7 @@ interface Wallet {
 export function WalletsList() {
   const { activeWallet } = useWallet();
   const [wallets, setWallets] = useState<Wallet[]>([]);
+  const [showAmounts, setShowAmounts] = useState(true);
 
   useEffect(() => {
     fetch("/api/wallets")
@@ -36,16 +39,30 @@ export function WalletsList() {
 
   const totalBalance = wallets.reduce((sum, wallet) => sum + wallet.balance, 0);
 
+  const toggleAmounts = () => {
+    setShowAmounts(!showAmounts);
+  };
+
   return (
     <Card className="col-span-1 lg:col-span-2">
-      <CardHeader>
-        <CardTitle>Wallets Overview</CardTitle>
-        <CardDescription>
-          Total Balance:{" "}
-          <span className={totalBalance >= 0 ? "text-green-500" : "text-red-500"}>
-            {formatBalance(totalBalance)}
-          </span>
-        </CardDescription>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <div>
+          <CardTitle>Wallets Overview</CardTitle>
+          <CardDescription>
+            Total Balance:{" "}
+            <span className={totalBalance >= 0 ? "text-green-500" : "text-red-500"}>
+              {showAmounts ? formatBalance(totalBalance) : "••••••••"}
+            </span>
+          </CardDescription>
+        </div>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={toggleAmounts}
+          title={showAmounts ? "Hide amounts" : "Show amounts"}
+        >
+          {showAmounts ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+        </Button>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
@@ -77,7 +94,7 @@ export function WalletsList() {
                       wallet.balance >= 0 ? "text-green-500" : "text-red-500"
                     }`}
                   >
-                    {formatBalance(wallet.balance)}
+                    {showAmounts ? formatBalance(wallet.balance) : "••••••••"}
                   </div>
                 </div>
               ))}
