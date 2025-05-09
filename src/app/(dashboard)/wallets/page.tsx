@@ -53,7 +53,7 @@ const WalletPage = () => {
    ];
 
    return (
-     <div className="p-6 space-y-8">
+     <div className="space-y-8">
        <h1 className="text-2xl font-bold mb-6">My Credit Cards</h1>
 
        <div className="mb-8">

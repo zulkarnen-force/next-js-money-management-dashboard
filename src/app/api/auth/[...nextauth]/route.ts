@@ -28,20 +28,24 @@ export const authOptions = {
     }),
   ],
   callbacks: {
-    async session({ session, user }: { session: Session; user: any }) {
-      // Attach user id to session
-      if (user && session.user) {
-        // @ts-ignore
-        session.user.id = user.id;
-        console.log(session)
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.id = token.id as string;
       }
       return session;
     },
   },
   session: {
-    strategy: "database" as SessionStrategy,
+    strategy: "jwt" as SessionStrategy,
   },
   secret: process.env.NEXTAUTH_SECRET,
+  debug: process.env.NODE_ENV === "development",
 };
 
 const handler = NextAuth(authOptions);

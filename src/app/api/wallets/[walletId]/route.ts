@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import prisma from "@/lib/prisma";
+import { prismaClient } from "@/lib/prisma";
+import { authOptions } from "../../auth/[...nextauth]/route";
 
 // PUT /api/wallets/[walletId] - Update a wallet
 export async function PUT(
@@ -10,7 +10,7 @@ export async function PUT(
 ) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
+    if (!session?.user?.id) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
@@ -22,12 +22,10 @@ export async function PUT(
     }
 
     // Verify wallet ownership
-    const wallet = await prisma.wallet.findFirst({
+    const wallet = await prismaClient.wallet.findFirst({
       where: {
         id: params.walletId,
-        user: {
-          email: session.user.email,
-        },
+        userId: session.user.id,
       },
     });
 
@@ -36,7 +34,7 @@ export async function PUT(
     }
 
     // Update wallet
-    const updatedWallet = await prisma.wallet.update({
+    const updatedWallet = await prismaClient.wallet.update({
       where: {
         id: params.walletId,
       },
@@ -64,12 +62,10 @@ export async function DELETE(
     }
 
     // Verify wallet ownership
-    const wallet = await prisma.wallet.findFirst({
+    const wallet = await prismaClient.wallet.findFirst({
       where: {
         id: params.walletId,
-        user: {
-          email: session.user.email,
-        },
+        userId: session.user.id,
       },
     });
 
@@ -78,15 +74,15 @@ export async function DELETE(
     }
 
     // Delete wallet and its transactions in a transaction
-    await prisma.$transaction([
+    await prismaClient.$transaction([
       // First delete all transactions associated with the wallet
-      prisma.transaction.deleteMany({
+      prismaClient.transaction.deleteMany({
         where: {
           walletId: params.walletId,
         },
       }),
       // Then delete the wallet
-      prisma.wallet.delete({
+      prismaClient.wallet.delete({
         where: {
           id: params.walletId,
         },

@@ -41,6 +41,7 @@ interface Wallet {
   id: string;
   name: string;
   createdAt: string;
+  balance: number;
 }
 
 export default function WalletsPage() {
@@ -151,7 +152,7 @@ export default function WalletsPage() {
   }, []);
 
   return (
-    <div className="container mx-auto py-10">
+    <div className="container mx-auto p-10">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Wallets</h1>
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
@@ -194,6 +195,7 @@ export default function WalletsPage() {
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
+              <TableHead>Balance</TableHead>
               <TableHead>Created At</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
@@ -202,6 +204,9 @@ export default function WalletsPage() {
             {wallets.map((wallet) => (
               <TableRow key={wallet.id}>
                 <TableCell>{wallet.name}</TableCell>
+                 <TableCell>
+                  {wallet.balance}
+                </TableCell>
                 <TableCell>
                   {new Date(wallet.createdAt).toLocaleDateString()}
                 </TableCell>
