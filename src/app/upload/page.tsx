@@ -39,13 +39,25 @@ export default function UploadPage() {
       return fixedRow;
     });
 
-    const res = await fetch("/api/import", {
+    // const res = await fetch("/api/import", {
+    //   method: "POST",
+    //   body: JSON.stringify(fixedJson),
+    //   headers: { "Content-Type": "application/json" },
+    // });
+    const res = await fetch("/api/queue", {
       method: "POST",
       body: JSON.stringify(fixedJson),
       headers: { "Content-Type": "application/json" },
     });
 
-    if (res.ok) alert("Import successful!");
+
+    
+    if (res.ok) {
+      const responseJson = await res.json();
+      console.info(responseJson)
+      localStorage.setItem("importJobId", responseJson.jobId )
+      window.location.href = '/dash';
+    }
   };
 
   return (

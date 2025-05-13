@@ -37,7 +37,9 @@ export function WalletsList() {
     }).format(balance);
   };
 
-  const totalBalance = wallets.reduce((sum, wallet) => sum + wallet.balance, 0);
+  console.log(wallets)
+
+  const totalBalance = Array.isArray(wallets) ? wallets.reduce((sum, wallet) => sum + wallet.balance, 0) : 0;
 
   const toggleAmounts = () => {
     setShowAmounts(!showAmounts);
@@ -67,13 +69,13 @@ export function WalletsList() {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {wallets.length === 0 ? (
+          {wallets.length === 0 && !Array.isArray(wallets) ? (
             <p className="text-muted-foreground text-center">
               No wallets with balance found.
             </p>
           ) : (
             <div className="grid gap-4 md:grid-cols-2">
-              {wallets.map((wallet) => (
+              {Array.isArray(wallets) && wallets.map((wallet) => (
                 <div
                   key={wallet.id}
                   className={`flex items-center justify-between rounded-lg border p-4 ${

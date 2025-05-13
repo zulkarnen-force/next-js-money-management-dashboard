@@ -18,6 +18,8 @@ import { AddShortcutDialog } from "@/components/shortcut/add-income-expense";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
+import { JobStatusNotifier } from "@/components/job-status-notifier";
+import { Toaster } from "@/components/ui/toaster";
 
 export default async function Page({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);
@@ -32,6 +34,8 @@ export default async function Page({ children }: { children: React.ReactNode }) 
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
           <div className="flex items-center gap-2 px-4">
+            <Toaster />
+            <JobStatusNotifier />
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />
             <Breadcrumb>
