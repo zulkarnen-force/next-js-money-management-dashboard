@@ -37,7 +37,7 @@ import { Label } from "@/components/ui/label";
 interface Wallet {
   id: string;
   name: string;
-  createdAt: string;
+  createdAt: Date;
   balance: number;
 }
 
@@ -54,23 +54,6 @@ export default function WalletActions({ wallets }: { wallets: Wallet[] }) {
     const res = await fetch("/api/wallets");
     const data = await res.json();
     setLocalWallets(data);
-  };
-
-  const handleCreate = async () => {
-    try {
-      const res = await fetch("/api/wallets", {
-        method: "POST",
-        body: JSON.stringify({ name: newWalletName }),
-        headers: { "Content-Type": "application/json" },
-      });
-      if (!res.ok) throw new Error();
-      toast.success("Wallet created");
-      setIsCreateDialogOpen(false);
-      setNewWalletName("");
-      refreshWallets();
-    } catch {
-      toast.error("Failed to create wallet");
-    }
   };
 
   const handleEdit = async () => {
@@ -107,8 +90,6 @@ export default function WalletActions({ wallets }: { wallets: Wallet[] }) {
 
   return (
     <>
-    
-
       <div className="rounded-md border mt-8">
         <Table>
           <TableHeader>
