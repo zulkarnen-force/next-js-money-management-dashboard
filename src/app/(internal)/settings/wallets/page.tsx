@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -80,7 +80,7 @@ export default function WalletsPage() {
       });
 
       if (!response.ok) throw new Error("Failed to create wallet");
-      
+
       toast.success("Wallet created successfully");
       setIsCreateDialogOpen(false);
       setNewWalletName("");
@@ -102,7 +102,7 @@ export default function WalletsPage() {
       });
 
       if (!response.ok) throw new Error("Failed to update wallet");
-      
+
       toast.success("Wallet updated successfully");
       setIsEditDialogOpen(false);
       setSelectedWallet(null);
@@ -123,7 +123,7 @@ export default function WalletsPage() {
       });
 
       if (!response.ok) throw new Error("Failed to delete wallet");
-      
+
       toast.success("Wallet deleted successfully");
       setIsDeleteDialogOpen(false);
       setSelectedWallet(null);
@@ -147,7 +147,7 @@ export default function WalletsPage() {
   };
 
   // Load wallets on component mount
-  useState(() => {
+  useEffect(() => {
     fetchWallets();
   }, []);
 
@@ -181,7 +181,10 @@ export default function WalletsPage() {
               </div>
             </div>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
+              <Button
+                variant="outline"
+                onClick={() => setIsCreateDialogOpen(false)}
+              >
                 Cancel
               </Button>
               <Button onClick={handleCreateWallet}>Create Wallet</Button>
@@ -204,9 +207,7 @@ export default function WalletsPage() {
             {wallets.map((wallet) => (
               <TableRow key={wallet.id}>
                 <TableCell>{wallet.name}</TableCell>
-                 <TableCell>
-                  {wallet.balance}
-                </TableCell>
+                <TableCell>{wallet.balance}</TableCell>
                 <TableCell>
                   {new Date(wallet.createdAt).toLocaleDateString()}
                 </TableCell>
@@ -253,7 +254,10 @@ export default function WalletsPage() {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setIsEditDialogOpen(false)}
+            >
               Cancel
             </Button>
             <Button onClick={handleUpdateWallet}>Save Changes</Button>
@@ -262,13 +266,16 @@ export default function WalletsPage() {
       </Dialog>
 
       {/* Delete Dialog */}
-      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+      <AlertDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the wallet
-              and all associated transactions.
+              This action cannot be undone. This will permanently delete the
+              wallet and all associated transactions.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -281,4 +288,4 @@ export default function WalletsPage() {
       </AlertDialog>
     </div>
   );
-} 
+}
