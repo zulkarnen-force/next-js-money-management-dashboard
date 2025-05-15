@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { Github } from "lucide-react";
+import Image from "next/image";
 
 export default function LandingPage() {
   const [username, setUsername] = useState("");
@@ -27,9 +28,11 @@ export default function LandingPage() {
           Take Control of Your Money
         </h1>
         <p className="text-xl text-muted-foreground max-w-md text-center mb-8">
-          The smart way to manage your money. Track expenses, set goals, and watch your savings grow.
+          The smart way to manage your money. Track expenses, set goals, and
+          watch your savings grow.
         </p>
       </div>
+
       {/* Right: Auth Component */}
       <div className="w-full md:w-1/2 flex flex-col justify-center items-center bg-muted px-8 py-12">
         <div className="w-full max-w-md bg-white rounded-xl shadow-lg p-8">
@@ -77,4 +80,4 @@ export default function LandingPage() {
       </div>
     </div>
   );
-} 
+}

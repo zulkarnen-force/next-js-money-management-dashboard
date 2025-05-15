@@ -9,21 +9,22 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { signIn } from "next-auth/react";
-import { 
-  ArrowRight, 
-  Wallet, 
-  TrendingUp, 
-  PiggyBank, 
-  Shield, 
-  Zap, 
-  Github, 
-  Mail 
+import {
+  ArrowRight,
+  Wallet,
+  TrendingUp,
+  PiggyBank,
+  Shield,
+  Zap,
+  Github,
+  Mail,
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import Image from "next/image";
 
 export default function LoginPage() {
   const { toast } = useToast();
@@ -68,7 +69,12 @@ export default function LoginPage() {
       <nav className="w-full flex items-center justify-between px-8 py-4 bg-white/80 backdrop-blur border-b border-gray-100 shadow-sm">
         {/* <img src="/monee-nobg.png" alt="Monee Logo" className="h-10"/> */}
         <h1 className="text-primary font-medium text-lg">Moone</h1>
-        <a href="/login" className="text-primary font-medium hover:underline text-lg">Login</a>
+        <a
+          href="/login"
+          className="text-primary font-medium hover:underline text-lg"
+        >
+          Login
+        </a>
       </nav>
       {/* Hero Section */}
       <div className="container mx-auto px-4 py-16 md:py-24">
@@ -78,7 +84,8 @@ export default function LoginPage() {
             <span className="text-primary"> Money</span>
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            The smart way to manage your money. Track expenses, set goals, and watch your savings grow.
+            The smart way to manage your money. Track expenses, set goals, and
+            watch your savings grow.
           </p>
           <a
             href="/login"
@@ -89,7 +96,23 @@ export default function LoginPage() {
         </div>
       </div>
 
-
+      <div className="container mx-auto rounded-lg min-h-1/2 py-14 flex items-center justify-center bg-gradient-to-br from-slate-200 to-white overflow-hidden">
+        {/* Glassmorphism Card */}
+        <div className="relative z-10 rounded-2xl bg-white/10 border border-white/30 shadow-2xl backdrop-blur-lg max-w-[1000px] p-8 w-full flex flex-col items-center">
+          <h1 className="text-4xl font-bold text-black text-center mb-4"></h1>
+          {/* Replace with your image or code screenshot */}
+          <img
+            src="/screenshoot.png"
+            alt="App Screenshot"
+            className="rounded-lg border border-white/20 shadow-lg w-full"
+            width={2000}
+          />
+        </div>
+        {/* Optional: Glow/Border effect */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div className="rounded-3xl border-4 border-purple-400/40 w-[900px] h-[520px] blur-2xl opacity-60"></div>
+        </div>
+      </div>
 
       {/* Features Section */}
       <div className="container mx-auto px-4 py-16">
@@ -103,7 +126,8 @@ export default function LoginPage() {
               <h3 className="text-xl font-semibold">Smart Tracking</h3>
             </div>
             <p className="text-muted-foreground">
-              Track your expenses and income effortlessly with our intuitive interface.
+              Track your expenses and income effortlessly with our intuitive
+              interface.
             </p>
           </Card>
           <Card className="p-6">
@@ -114,7 +138,8 @@ export default function LoginPage() {
               <h3 className="text-xl font-semibold">Visual Insights</h3>
             </div>
             <p className="text-muted-foreground">
-              Get clear insights into your spending habits with beautiful charts and analytics.
+              Get clear insights into your spending habits with beautiful charts
+              and analytics.
             </p>
           </Card>
           <Card className="p-6">
@@ -178,9 +203,12 @@ export default function LoginPage() {
       <div className="container mx-auto px-4 py-16">
         <div className="flex flex-col md:flex-row items-center gap-8">
           <div className="flex-1 space-y-4">
-            <h2 className="text-3xl font-bold">Your Security is Our Priority</h2>
+            <h2 className="text-3xl font-bold">
+              Your Security is Our Priority
+            </h2>
             <p className="text-muted-foreground">
-              We use industry-standard security measures to protect your data. Your financial information is encrypted and secure.
+              We use industry-standard security measures to protect your data.
+              Your financial information is encrypted and secure.
             </p>
             <div className="flex items-center gap-4">
               <Shield className="h-5 w-5 text-primary" />

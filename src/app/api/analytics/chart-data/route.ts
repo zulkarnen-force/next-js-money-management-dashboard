@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { prisma } from "@/lib/prisma";
-import { authOptions } from "@/lib/auth";
+import { authOptions } from "../../auth/[...nextauth]/route";
+import { prismaClient } from "@/lib/prisma";
 
 export async function GET() {
   try {
@@ -11,7 +11,7 @@ export async function GET() {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const user = await prisma.user.findUnique({
+    const user = await prismaClient.user.findUnique({
       where: { email: session.user.email },
     });
 
@@ -23,7 +23,7 @@ export async function GET() {
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-    const transactions = await prisma.transaction.findMany({
+    const transactions = await prismaClient.transaction.findMany({
       where: {
         userId: user.id,
         period: {
