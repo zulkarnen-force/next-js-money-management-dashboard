@@ -7,41 +7,33 @@ import { prismaClient } from "@/lib/prisma";
 const prisma = new PrismaClient();
 
 export async function GET(req: NextRequest) {
-  const session  = await getServerSession(authOptions)
-  
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
   const { searchParams } = new URL(req.url);
-  const walletId = searchParams.get('wallet_id');
+  const page = parseInt(searchParams.get("page") || "1", 10);
+  const pageSize = parseInt(searchParams.get("pageSize") || "10", 10);
 
-  if (!walletId) {
-    return NextResponse.json({ error: "Wallet ID is required" }, { status: 400 });
-  }
+  const skip = (page - 1) * pageSize;
 
-  try {
-    const transactions = await prisma.transaction.findMany({
-      where: {
-        walletId,
-        userId: session.user.id
-      },
+  const [transactions, total] = await Promise.all([
+    prisma.transaction.findMany({
+      skip,
+      take: pageSize,
+      orderBy: { createdAt: "desc" },
       include: {
         category: true,
         subcategory: true,
-        transactionType: true
+        transactionType: true,
+        wallet: true,
       },
-      orderBy: {
-        period: 'desc'
-      },
-      take: 10 // Limit to 10 most recent transactions
-    });
+    }),
+    prisma.transaction.count(),
+  ]);
 
-    return NextResponse.json(transactions);
-  } catch (error) {
-    console.error("Error fetching transactions:", error);
-    return NextResponse.json({ error: "Failed to fetch transactions" }, { status: 500 });
-  }
+  return NextResponse.json({
+    data: transactions,
+    total,
+    page,
+    pageSize,
+  });
 }
 
 export async function POST(req: NextRequest) {
