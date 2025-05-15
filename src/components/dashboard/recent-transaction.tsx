@@ -34,7 +34,7 @@ export function RecentTransactions() {
 
   useEffect(() => {
     if (activeWallet) {
-      fetch(`/api/transactions?wallet_id=${activeWallet.id}`)
+      fetch(`/api/transactions/latests?wallet_id=${activeWallet.id}`)
         .then((res) => res.json())
         .then((data) => setTransactions(data))
         .catch((err) => console.error("Error fetching transactions:", err));
