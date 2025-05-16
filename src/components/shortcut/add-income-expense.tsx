@@ -23,7 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { useWallet } from "@/components/wallet-switcher";
+import { useWallet } from "../wallet-context";
 
 interface Subcategory {
   id: string;

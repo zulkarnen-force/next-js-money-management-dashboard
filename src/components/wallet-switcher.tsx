@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { ChevronsUpDown, Plus } from "lucide-react";
-
+import useSWR from "swr";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,57 +18,9 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-
-interface Wallet {
-  id: string;
-  name: string;
-  userId: string;
-  createdAt: string;
-  balance: number;
-}
-
-interface WalletContextType {
-  wallets: Wallet[];
-  activeWallet: Wallet | null;
-  setActiveWallet: (wallet: Wallet) => void;
-}
-
-const WalletContext = React.createContext<WalletContextType | undefined>(
-  undefined
-);
-
-export const WalletProvider = ({ children }: { children: React.ReactNode }) => {
-  const [wallets, setWallets] = React.useState<Wallet[]>([]);
-  const [activeWallet, setActiveWallet] = React.useState<Wallet | null>(null);
-
-  React.useEffect(() => {
-    fetch("/api/wallets")
-      .then((res) => res.json())
-      .then((data) => {
-        setWallets(data);
-        if (data.length > 0) {
-          setActiveWallet(data[0]); // Set the first wallet as default
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching wallets:", error);
-      });
-  }, []);
-
-  return (
-    <WalletContext.Provider value={{ wallets, activeWallet, setActiveWallet }}>
-      {children}
-    </WalletContext.Provider>
-  );
-};
-
-export const useWallet = () => {
-  const context = React.useContext(WalletContext);
-  if (!context) {
-    throw new Error("useWallet must be used within a WalletProvider");
-  }
-  return context;
-};
+import { useWallets } from "@/hooks/use-wallets";
+import { WalletContextType, Wallet } from "@/types/wallet";
+import { useWallet } from "./wallet-context";
 
 export function WalletSwitcher() {
   const { isMobile } = useSidebar();
@@ -123,9 +75,9 @@ export function WalletSwitcher() {
   }
 
   const formatBalance = (balance: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'IDR',
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "IDR",
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(balance);
@@ -149,7 +101,13 @@ export function WalletSwitcher() {
                 <span className="truncate font-semibold">
                   {activeWallet.name}
                 </span>
-                <span className={`truncate text-xs ${activeWallet.balance >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                <span
+                  className={`truncate text-xs ${
+                    activeWallet.balance >= 0
+                      ? "text-green-500"
+                      : "text-red-500"
+                  }`}
+                >
                   Balance: {formatBalance(activeWallet.balance)}
                 </span>
               </div>
@@ -178,11 +136,17 @@ export function WalletSwitcher() {
                 </div>
                 <div className="flex flex-col">
                   <span>{wallet.name}</span>
-                  <span className={`text-xs ${wallet.balance >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                  <span
+                    className={`text-xs ${
+                      wallet.balance >= 0 ? "text-green-500" : "text-red-500"
+                    }`}
+                  >
                     {formatBalance(wallet.balance)}
                   </span>
                 </div>
-                <DropdownMenuShortcut>⌘{wallet.id.slice(0, 4)}</DropdownMenuShortcut>
+                <DropdownMenuShortcut>
+                  ⌘{wallet.id.slice(0, 4)}
+                </DropdownMenuShortcut>
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />

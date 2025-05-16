@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import SessionWrapper from "@/components/SessionWrapper";
 import "./globals.css";
-import { WalletProvider } from "@/components/wallet-switcher";
+import { WalletProvider } from "@/components/wallet-context";
 
 // Initialize the Inter font
 const inter = Inter({
