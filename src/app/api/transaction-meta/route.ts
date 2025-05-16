@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { prismaClient } from "@/lib/prisma";
 
 export async function GET(req: NextRequest) {
@@ -11,24 +11,24 @@ export async function GET(req: NextRequest) {
     }
 
     const { searchParams } = new URL(req.url);
-    const type = searchParams.get('type'); // 'income' or 'outcome'
+    const type = searchParams.get("type"); // 'income' or 'outcome'
 
     // Fetch all required metadata
     const [subcategories, transactionTypes] = await Promise.all([
       prismaClient.subcategory.findMany({
-        where: { 
+        where: {
           userId: session.user.id,
           category: {
             userId: session.user.id,
-            ...(type ? { type } : {})
-          }
+            ...(type ? { type } : {}),
+          },
         },
         include: { category: true },
       }),
       prismaClient.transactionType.findMany({
-        where: { 
+        where: {
           userId: session.user.id,
-          ...(type ? { type } : {}) // Filter by type if provided
+          ...(type ? { type } : {}), // Filter by type if provided
         },
       }),
     ]);
@@ -44,4 +44,4 @@ export async function GET(req: NextRequest) {
       { status: 500 }
     );
   }
-} 
+}

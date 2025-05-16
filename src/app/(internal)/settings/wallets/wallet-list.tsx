@@ -1,8 +1,8 @@
-// src/app/(internal)/settings/wallets/wallet-list.tsx
 import WalletActions from "./wallet-action";
 import { getServerSession } from "next-auth";
 import { prismaClient } from "@/lib/prisma";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 const getWallets = async (userId: string) => {
   try {
@@ -49,9 +49,11 @@ const getWallets = async (userId: string) => {
   }
 };
 
-
 export default async function WalletList() {
   const session = await getServerSession(authOptions);
+  if (!session?.user?.id) {
+    redirect("/api/auth/signin"); // or redirect("/login")
+  }
   const wallets = await getWallets(session.user.id);
   return <WalletActions wallets={wallets} />;
 }

@@ -2,7 +2,6 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { OverviewChart } from "@/components/analytics/overview-chart";
-import { prisma } from "@/lib/prisma";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 

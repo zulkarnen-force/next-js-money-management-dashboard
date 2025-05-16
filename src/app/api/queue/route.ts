@@ -1,7 +1,7 @@
 // app/api/import/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "../auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { prismaClient } from "@/lib/prisma";
 
 export async function POST(req: NextRequest) {
@@ -15,9 +15,7 @@ export async function POST(req: NextRequest) {
 
   const data = await req.json();
 
-  console.log( { userId,
-      data,
-      status: "pending"})
+  console.log({ userId, data, status: "pending" });
 
   const job = await prismaClient.importJob.create({
     data: {

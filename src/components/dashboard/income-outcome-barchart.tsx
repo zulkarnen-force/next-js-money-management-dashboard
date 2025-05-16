@@ -17,23 +17,10 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { useFetch } from "@/hooks/useFetch";
 import { useWallet } from "../wallet-switcher";
-import { useEffect, useInsertionEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { fetcher } from "@/lib/fetcher";
-import { Skeleton } from "../ui/skeleton";
-
-type ChartData = {
-  month: string;
-  income: number;
-  outcome: number;
-};
-
-type ResponseChartData = {
-  data: ChartData[];
-  dateRange?: string;
-  trending?: number | null;
-};
+import { ChartData, ResponseChartData } from "@/types";
 
 const chartConfig = {
   desktop: {
@@ -45,18 +32,6 @@ const chartConfig = {
     color: "hsl(var(--chart-2))",
   },
 } satisfies ChartConfig;
-
-function incomeOutcomeBarChartSkelton() {
-  return (
-    <div className="flex flex-col space-y-3">
-      <Skeleton className="h-[125px] w-[250px] rounded-xl" />
-      <div className="space-y-2">
-        <Skeleton className="h-4 w-[250px]" />
-        <Skeleton className="h-4 w-[200px]" />
-      </div>
-    </div>
-  );
-}
 
 export default function incomeOutcomeBarChart() {
   const { activeWallet } = useWallet();

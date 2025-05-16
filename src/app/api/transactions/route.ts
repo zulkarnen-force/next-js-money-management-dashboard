@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { prismaClient } from "@/lib/prisma";
 
 const prisma = new PrismaClient();
@@ -57,7 +57,13 @@ export async function POST(req: NextRequest) {
     } = body;
 
     // Validate required fields
-    if (!amount || !walletId || !categoryId || !subcategoryId || !transactionTypeId) {
+    if (
+      !amount ||
+      !walletId ||
+      !categoryId ||
+      !subcategoryId ||
+      !transactionTypeId
+    ) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
@@ -94,4 +100,4 @@ export async function POST(req: NextRequest) {
       { status: 500 }
     );
   }
-} 
+}

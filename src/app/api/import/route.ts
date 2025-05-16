@@ -1,35 +1,35 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-import { getServerSession } from "next-auth/next"
-import { authOptions } from "../auth/[...nextauth]/route";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
 
 const prisma = new PrismaClient();
 
 async function cleanupUserData(userId: string) {
   // Delete in reverse order of dependencies
   await prisma.transaction.deleteMany({
-    where: { userId }
+    where: { userId },
   });
 
   await prisma.subcategory.deleteMany({
-    where: { userId }
+    where: { userId },
   });
 
   await prisma.category.deleteMany({
-    where: { userId }
+    where: { userId },
   });
 
   await prisma.transactionType.deleteMany({
-    where: { userId }
+    where: { userId },
   });
 
   await prisma.wallet.deleteMany({
-    where: { userId }
+    where: { userId },
   });
 }
 
 export async function POST(req: NextRequest) {
-  const session = await getServerSession(authOptions)
+  const session = await getServerSession(authOptions);
   // @ts-ignore
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -42,10 +42,10 @@ export async function POST(req: NextRequest) {
   try {
     // Clean up existing data for the user
     await cleanupUserData(userId);
-    
+
     // Create a map to store wallet references
     const walletMap = new Map<string, string>();
-    
+
     for (const row of data) {
       const categoryName = row["Category"]?.trim() || "";
       const subcategoryName = row["Subcategory"]?.trim() || "";
@@ -56,61 +56,64 @@ export async function POST(req: NextRequest) {
       let wallet = await prisma.wallet.findFirst({
         where: {
           name: accountName,
-          userId: userId
-        }
+          userId: userId,
+        },
       });
 
       if (!wallet) {
         wallet = await prisma.wallet.create({
           data: {
             name: accountName,
-            userId: userId
-          }
+            userId: userId,
+          },
         });
       }
       walletMap.set(accountName, wallet.id);
 
       // Get or create TransactionType
       let transactionType = await prisma.transactionType.findFirst({
-        where: { 
+        where: {
           name: typeName,
-          userId: userId
-        }
+          userId: userId,
+        },
       });
 
       if (!transactionType) {
         // Determine type based on name
-        const type = ['Income', 'Transfer-In', 'Income Balance'].includes(typeName) 
-          ? 'income' 
-          : 'outcome';
+        const type = ["Income", "Transfer-In", "Income Balance"].includes(
+          typeName
+        )
+          ? "income"
+          : "outcome";
 
         transactionType = await prisma.transactionType.create({
-          data: { 
+          data: {
             name: typeName,
             type: type,
-            userId: userId
-          }
+            userId: userId,
+          },
         });
       }
 
       // Get or create Category
       let category = await prisma.category.findFirst({
-        where: { 
+        where: {
           name: categoryName,
-          userId: userId
-        }
+          userId: userId,
+        },
       });
 
       if (!category) {
         // Determine category type based on transaction type
-        const categoryType = transactionType.type === 'income' ? 'income' : 'outcome';
-        
+        const categoryType =
+          transactionType.type === "income" ? "income" : "outcome";
+
         category = await prisma.category.create({
-          data: { 
+          data: {
             name: categoryName,
             type: categoryType,
-            userId: userId
-          }
+            userId: userId,
+          },
         });
       }
 
@@ -121,7 +124,7 @@ export async function POST(req: NextRequest) {
           where: {
             name: subcategoryName,
             categoryId: category.id,
-            userId: userId
+            userId: userId,
           },
         });
 
@@ -130,7 +133,7 @@ export async function POST(req: NextRequest) {
             data: {
               name: subcategoryName,
               categoryId: category.id,
-              userId: userId
+              userId: userId,
             },
           });
         }
@@ -140,7 +143,7 @@ export async function POST(req: NextRequest) {
           where: {
             name: "Default",
             categoryId: category.id,
-            userId: userId
+            userId: userId,
           },
         });
 
@@ -149,7 +152,7 @@ export async function POST(req: NextRequest) {
             data: {
               name: "Default",
               categoryId: category.id,
-              userId: userId
+              userId: userId,
             },
           });
         }
@@ -168,7 +171,7 @@ export async function POST(req: NextRequest) {
           subcategoryId: subcategory.id,
           transactionTypeId: transactionType.id,
           walletId: wallet.id,
-          userId: userId
+          userId: userId,
         },
       });
     }
@@ -176,6 +179,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Import error:", error);
-    return NextResponse.json({ error: "An error occurred during import" }, { status: 500 });
+    return NextResponse.json(
+      { error: "An error occurred during import" },
+      { status: 500 }
+    );
   }
 }

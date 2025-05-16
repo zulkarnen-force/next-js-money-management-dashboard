@@ -1,13 +1,9 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import { getServerSession } from "next-auth";
 import { prismaClient } from "@/lib/prisma";
-import { authOptions } from "../../auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 
-// PUT /api/wallets/[walletId] - Update a wallet
-export async function PUT(
-  req: Request,
-  { params }: { params: { walletId: string } }
-) {
+export async function PUT(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) {
@@ -21,10 +17,11 @@ export async function PUT(
       return new NextResponse("Name is required", { status: 400 });
     }
 
-    // Verify wallet ownership
+    const walletId = req.nextUrl.pathname.split("/").pop()!;
+
     const wallet = await prismaClient.wallet.findFirst({
       where: {
-        id: params.walletId,
+        id: walletId,
         userId: session.user.id,
       },
     });
@@ -33,14 +30,9 @@ export async function PUT(
       return new NextResponse("Wallet not found", { status: 404 });
     }
 
-    // Update wallet
     const updatedWallet = await prismaClient.wallet.update({
-      where: {
-        id: params.walletId,
-      },
-      data: {
-        name,
-      },
+      where: { id: walletId },
+      data: { name },
     });
 
     return NextResponse.json(updatedWallet);
@@ -50,21 +42,18 @@ export async function PUT(
   }
 }
 
-// DELETE /api/wallets/[walletId] - Delete a wallet and its transactions
-export async function DELETE(
-  req: Request,
-  { params }: { params: { walletId: string } }
-) {
+export async function DELETE(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
+    if (!session?.user?.id) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    // Verify wallet ownership
+    const walletId = req.nextUrl.pathname.split("/").pop()!;
+
     const wallet = await prismaClient.wallet.findFirst({
       where: {
-        id: params.walletId,
+        id: walletId,
         userId: session.user.id,
       },
     });
@@ -73,19 +62,12 @@ export async function DELETE(
       return new NextResponse("Wallet not found", { status: 404 });
     }
 
-    // Delete wallet and its transactions in a transaction
     await prismaClient.$transaction([
-      // First delete all transactions associated with the wallet
       prismaClient.transaction.deleteMany({
-        where: {
-          walletId: params.walletId,
-        },
+        where: { walletId },
       }),
-      // Then delete the wallet
       prismaClient.wallet.delete({
-        where: {
-          id: params.walletId,
-        },
+        where: { id: walletId },
       }),
     ]);
 
@@ -94,4 +76,4 @@ export async function DELETE(
     console.error("[WALLET_DELETE]", error);
     return new NextResponse("Internal Error", { status: 500 });
   }
-} 
+}

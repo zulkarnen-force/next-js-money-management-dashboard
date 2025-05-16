@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { prisma } from "@/lib/prisma";
+import { prismaClient } from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
 
 export async function GET() {
@@ -11,7 +11,7 @@ export async function GET() {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const user = await prisma.user.findUnique({
+    const user = await prismaClient.user.findUnique({
       where: { email: session.user.email },
     });
 
@@ -24,7 +24,7 @@ export async function GET() {
     startOfMonth.setDate(1);
     startOfMonth.setHours(0, 0, 0, 0);
 
-    const transactions = await prisma.transaction.findMany({
+    const transactions = await prismaClient.transaction.findMany({
       where: {
         userId: user.id,
         period: {
@@ -57,4 +57,4 @@ export async function GET() {
     console.error("[ANALYTICS_OVERVIEW]", error);
     return new NextResponse("Internal Error", { status: 500 });
   }
-} 
+}

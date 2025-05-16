@@ -1,7 +1,7 @@
 import { prismaClient } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
-import { authOptions } from "../../auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 
 export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
 
   return NextResponse.json({
     status: job.status,
-    ata:job.data,
+    ata: job.data,
     createdAt: job.createdAt,
   });
 }
