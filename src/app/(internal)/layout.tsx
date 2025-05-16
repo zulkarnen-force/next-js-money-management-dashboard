@@ -21,16 +21,23 @@ import { redirect } from "next/navigation";
 import { JobStatusNotifier } from "@/components/job-status-notifier";
 import { Toaster } from "@/components/ui/toaster";
 
-export default async function Page({ children }: { children: React.ReactNode }) {
+export default async function Page({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const session = await getServerSession(authOptions);
-  console.log("🚀 ~ Page ~ session:", session)
-
   if (!session) {
     redirect("/login");
   }
+  const user = {
+    name: session.user?.name || "User",
+    email: session.user?.email || "user@example.com",
+    avatar: session.user?.image || "/avatars/default.jpg",
+  };
   return (
     <SidebarProvider>
-      <AppSidebar />
+      <AppSidebar user={user} />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
           <div className="flex items-center gap-2 px-4">
@@ -41,9 +48,7 @@ export default async function Page({ children }: { children: React.ReactNode }) 
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">
-                   Savvie
-                  </BreadcrumbLink>
+                  <BreadcrumbLink href="#">Savvie</BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="hidden md:block" />
                 <BreadcrumbItem>

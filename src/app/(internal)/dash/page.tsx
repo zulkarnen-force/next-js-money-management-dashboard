@@ -4,6 +4,7 @@ import { TransactionGraph } from "@/components/dashboard/income-outcome-transact
 import { IncomeOutcomeArea } from "@/components/dashboard/income-outcome-area";
 import { ExpenseBreakdown } from "@/components/dashboard/expense-breakdown";
 import { WalletsList } from "@/components/dashboard/wallets-list";
+import IncomeOutcomeBarChart from "@/components/dashboard/income-outcome-barchart";
 
 export default function MoneyDashboard() {
   return (
@@ -11,8 +12,8 @@ export default function MoneyDashboard() {
       <WalletsList />
       <RecentTransactions />
       <ExpenseBreakdown />
-      <IncomeOutcomeArea />
-      <TransactionGraph />
+      <IncomeOutcomeArea/>
+      <IncomeOutcomeBarChart />
     </div>
   );
 }

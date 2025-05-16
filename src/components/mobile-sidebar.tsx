@@ -33,9 +33,15 @@ export function MobileSidebar() {
       </SheetTrigger>
       <SheetContent side="left" className="pl-1 pr-0">
         <div className="px-7">
-          <AppSidebar />
+          <AppSidebar
+            user={{
+              avatar: "",
+              email: "",
+              name: "",
+            }}
+          />
         </div>
       </SheetContent>
     </Sheet>
   );
-} 
+}

@@ -1,5 +1,4 @@
 "use client";
-
 import * as React from "react";
 import {
   BarChart3,
@@ -158,8 +157,15 @@ const navigation = {
   ],
 };
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { data: session } = useSession();
+type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
+  user: {
+    name: string;
+    email: string;
+    avatar: string;
+  };
+};
+
+export function AppSidebar({ user, ...props }: AppSidebarProps) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -170,16 +176,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavProjects projects={navigation.projects} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser
-          user={{
-            name: session?.user?.name || "User",
-            email: session?.user?.email || "user@example.com",
-            avatar: session?.user?.image || "/avatars/default.jpg",
-          }}
-        />
+        <NavUser user={user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
   );
 }
-
