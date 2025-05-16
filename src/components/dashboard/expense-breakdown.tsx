@@ -14,7 +14,7 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
-import { useWallet } from "../wallet-switcher";
+import { useWallet } from "../wallet-context";
 
 // Predefined colors for categories
 const COLORS = [
@@ -50,7 +50,10 @@ export function ExpenseBreakdown() {
 
   if (!activeWallet) return null;
 
-  const currentMonth = new Date().toLocaleString('default', { month: 'long', year: 'numeric' });
+  const currentMonth = new Date().toLocaleString("default", {
+    month: "long",
+    year: "numeric",
+  });
 
   return (
     <Card>
@@ -71,22 +74,22 @@ export function ExpenseBreakdown() {
                 cx="50%"
                 cy="50%"
                 outerRadius={80}
-                label={({ name, percent }) => 
+                label={({ name, percent }) =>
                   `${name} (${(percent * 100).toFixed(0)}%)`
                 }
               >
                 {expenseData.map((entry, index) => (
-                  <Cell 
-                    key={`cell-${index}`} 
-                    fill={COLORS[index % COLORS.length]} 
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[index % COLORS.length]}
                   />
                 ))}
               </Pie>
-              <Tooltip 
-                formatter={(value: number) => 
-                  new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: 'IDR',
+              <Tooltip
+                formatter={(value: number) =>
+                  new Intl.NumberFormat("en-US", {
+                    style: "currency",
+                    currency: "IDR",
                     minimumFractionDigits: 0,
                     maximumFractionDigits: 0,
                   }).format(value)
@@ -99,4 +102,4 @@ export function ExpenseBreakdown() {
       </CardContent>
     </Card>
   );
-} 
+}

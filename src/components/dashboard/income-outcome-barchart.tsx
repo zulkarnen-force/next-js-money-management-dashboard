@@ -17,7 +17,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { useWallet } from "../wallet-switcher";
+import { useWallet } from "../wallet-context";
 import { useEffect, useState } from "react";
 import { fetcher } from "@/lib/fetcher";
 import { ChartData, ResponseChartData } from "@/types";

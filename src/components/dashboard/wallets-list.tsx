@@ -6,9 +6,9 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { useWallet } from "../wallet-switcher";
 import { Button } from "@/components/ui/button";
 import { Eye, EyeOff } from "lucide-react";
+import { useWallet } from "../wallet-context";
 
 interface Wallet {
   id: string;

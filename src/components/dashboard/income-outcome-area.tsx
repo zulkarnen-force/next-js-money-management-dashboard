@@ -15,7 +15,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { useWallet } from "../wallet-switcher";
+import { useWallet } from "../wallet-context";
 
 const chartConfig = {
   income: {
@@ -105,7 +105,11 @@ export function IncomeOutcomeArea() {
               <TrendingUp className="h-4 w-4" />
             </div>
             <div className="flex items-center gap-2 leading-none text-muted-foreground">
-              {new Date().toLocaleString('default', { month: 'long' })} - {new Date(new Date().setMonth(new Date().getMonth() - 5)).toLocaleString('default', { month: 'long' })} {new Date().getFullYear()}
+              {new Date().toLocaleString("default", { month: "long" })} -{" "}
+              {new Date(
+                new Date().setMonth(new Date().getMonth() - 5)
+              ).toLocaleString("default", { month: "long" })}{" "}
+              {new Date().getFullYear()}
             </div>
           </div>
         </div>

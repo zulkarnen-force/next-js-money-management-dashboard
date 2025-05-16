@@ -7,7 +7,7 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { useWallet } from "../wallet-switcher";
+import { useWallet } from "../wallet-context";
 
 interface Transaction {
   id: string;
